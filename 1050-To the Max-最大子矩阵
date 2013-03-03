@@ -1,0 +1,55 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <cstdlib>
+#include <stack>
+#include <string>
+#include <climits>
+#include <ctime>
+#include <map>
+#include <hash_map>
+#include <queue>
+
+using namespace std;
+
+int x[100][100][100]; // x, y, len
+
+int main() {
+  ifstream ifs;
+	ifs.open("D:\\mycode\\i.txt");
+	
+	int n;
+	
+	while (ifs >> n) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				ifs >> x[i][j][1];
+			}
+		}
+
+		for (int i = 0; i < n; i++) {
+			for (int start = 0; start < n-1; start++) {
+				for (int len = 2; len <= n-start; len++) {
+					x[i][start][len] = x[i][start][len-1] + x[i][start+len-1][1];
+				}
+			}
+		}
+
+		int res = INT_MIN;
+		int sum = 0;
+		
+		for (int left = 0; left < n; left++) {
+			for (int len =  1; len <= n-left; len++) {
+				sum = 0;
+				for (int i = 0; i < n; i++) {
+					sum += x[i][left][len];
+					res = max(res, sum);
+					if (sum < 0) sum = 0;
+				}
+			}
+		}
+
+		cout << res << endl;
+	}
+	system("PAUSE");
+}

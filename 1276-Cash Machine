@@ -1,0 +1,52 @@
+#include <iostream>
+#include <map>
+#include <vector>
+#include <algorithm>
+#include <cstdlib>
+#include <stack>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <climits>
+
+using namespace std;
+
+int x[100001]; // optimized: use [] instead of [][]
+int v[11];
+int num[11];
+int used[100001];
+int cash;
+int n;
+
+int main()
+{
+	ifstream ifs;
+	ifs.open("D:\\mycode\\i.txt");
+	
+	while (ifs >> cash >> n) {
+
+		for (int i = 1; i <= n; i++) {
+			ifs >> num[i] >> v[i];
+		}
+
+		if (n == 0 || cash == 0) { 
+			cout << 0 << endl; continue;
+		}
+
+		memset(x, 0, (cash+1)*sizeof(int));
+		// f(i, cash) = max{ f(i-1, cash-j*v[j]) + j*v[j] }
+		for (int i = 1; i <= n; i++) {
+			memset(used, 0, (cash+1)*sizeof(int));
+			for (int j = v[i]; j <= cash; j++) {
+				if (x[j] < x[j-v[i]]+v[i] && used[j-v[i]] < num[i]) {
+					used[j] = used[j-v[i]]+1;
+					x[j] = x[j-v[i]]+v[i];
+				}
+			}
+		}
+
+		cout << x[cash] << endl;
+	}
+    system("PAUSE");
+    return 0;
+}

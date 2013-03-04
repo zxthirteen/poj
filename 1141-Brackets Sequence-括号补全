@@ -1,0 +1,83 @@
+#include <iostream>
+#include <map>
+#include <vector>
+#include <algorithm>
+#include <cstdlib>
+#include <stack>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <climits>
+
+using namespace std;
+
+const int maxn = 100;
+int n;
+string s;
+
+int part[maxn][maxn];
+int num[maxn][maxn];
+
+bool ispair(string s, int i, int j) {
+    if (s[i] == '(' && s[j] == ')' || s[i] == '[' && s[j] == ']') return true;
+	return false;
+}
+
+void prints(int i, int j) {
+	if (i > j) return;
+	if (i == j) {
+		if (s[i] == '(' || s[j] == ')') {
+			cout << "()";
+		} else  {
+			cout << "[]";		
+		}
+		return;
+	}
+	if (part[i][j] == j) {
+		cout << s[i];
+		prints(i+1,j-1);
+		cout << s[j];
+	} else {
+		prints(i, part[i][j]);
+		prints(part[i][j]+1, j);
+	}
+}
+
+int main()
+{
+	ifstream ifs;
+	ifs.open("D:\\mycode\\i.txt");
+	ifs >> s;
+	n = s.size();
+	
+	for (int i = 0; i < n; i++) {
+		part[i][i] = i;
+		num[i][i] = 1;
+	}
+
+	for (int len = 2; len <= n; len++) {
+		for (int i = 0; i <= n-len; i++) {
+			int j = i + len-1;
+			int tmp = INT_MAX;
+			if (ispair(s, i, j)) {
+				if (j == i+1)
+					tmp = -1;
+				else tmp = num[i+1][j-1];
+			}
+			int pos = j;
+			for (int k = i; k < j; k++) {
+				if (num[i][k]+num[k+1][j] < tmp) {
+					tmp = num[i][k]+num[k+1][j];
+					pos = k;
+				}
+			}
+			num[i][j] = tmp;
+			part[i][j] = pos;
+		}
+	}
+
+	prints(0, n-1);
+	cout << endl;
+    system("PAUSE");
+    return 0;
+}
